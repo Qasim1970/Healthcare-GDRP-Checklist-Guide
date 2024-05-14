@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDPR Compliance Checklist</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>GDPR Compliance Checklist</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="fitbit.html">Fitbit Vulnerability Analysis</a></li>
+                <li><a href="checklist.html">GDPR Compliance Checklist</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main> 
+        <section>
+        <h2>GDPR Compliance Checklist</h2>
+        <p>Here you can find the GDPR and data compliance checklist for healthcare organizations.</p>
+        <form id="gdprChecklistForm">
+            <ol id="questionList">
+                <!-- Here im adding the buttons --> 
+            </ol>
+            <button type="button" id="prevButton" onclick="prevQuestion()" style="display: none;">Previous</button>
+            <button type="button" id="nextButton" onclick="nextQuestion()">Next</button>
+            <button type="button" id="calculateButton" onclick="calculateScore()" style="display: none;">Calculate Score</button>
+        </form>
+        <div id="result"></div>
+    </main>
+
+
+    <script>
+        var currentQuestion = 0;
+        var totalQuestions = 25; // this is how many questions i have if new questions added i can adjust this number.
+        var answers = [];
+
+        function showQuestion(index) {
+            var questionList = document.getElementById('questionList');
+            questionList.innerHTML = '<li><label for="q' + (index + 1) + '">Question ' + (index + 1) + ': ' + questions[index].question + '</label><select id="q' + (index + 1) + '"><option value="2">' + questions[index].answers[0] + '</option><option value="1">' + questions[index].answers[1] + '</option><option value="0">' + questions[index].answers[2] + '</option></select></li>';
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+                updateButtons();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                answers[currentQuestion] = parseInt(document.getElementById('q' + (currentQuestion + 1)).value);
+                currentQuestion++;
+                showQuestion(currentQuestion);
+                updateButtons();
+            }
+        }
+
+        function updateButtons() {
+            var prevButton = document.getElementById('prevButton');
+            var nextButton = document.getElementById('nextButton');
+            var calculateButton = document.getElementById('calculateButton');
+
+            if (currentQuestion === 0) {
+                prevButton.style.display = 'none';
+            } else {
+                prevButton.style.display = 'inline';
+            }
+
+            if (currentQuestion === totalQuestions - 1) {
+                nextButton.style.display = 'none';
+                calculateButton.style.display = 'inline';
+            } else {
+                nextButton.style.display = 'inline';
+                calculateButton.style.display = 'none';
+            }
+        }
+ // This part of the code is using the function calculate score to give the final score
+        function calculateScore() {
+            answers[currentQuestion] = parseInt(document.getElementById('q' + (currentQuestion + 1)).value);
+            var totalScore = answers.reduce((a, b) => a + b, 0);
+            var percentage = (totalScore / (totalQuestions * 2)) * 100; // Adjusted to a scale of 0-100
+            var resultDiv = document.getElementById('result');
+
+            var actionPlan = getActionPlan(percentage);
+
+            resultDiv.innerHTML = '<p>Total Score: ' + totalScore + ' out of ' + (totalQuestions * 2) + ' (' + percentage.toFixed(2) + '%)</p>';
+            resultDiv.innerHTML += '<p>Action Plan: ' + actionPlan + '</p>';
+        }
+// Depending on the score you get this function will display you an action plan
+        function getActionPlan(percentage) {
+            if (percentage >= 0 && percentage <= 39) {
+                return "High Risk :" +
+                "<ul>" +
+                "<li>Comprehensive Compliance Overhaul:" +
+                "<ul>" +
+                "<li>Conduct a top-to-bottom review of existing GDPR and data compliance practices within the healthcare organization.</li>" +
+                "<li>Establish a dedicated task force comprising legal, IT, and compliance experts to lead the overhaul process.</li>" +
+                "<li>Develop a detailed roadmap outlining specific steps to address identified gaps and ensure comprehensive compliance integration.</li>" +
+                "</ul>" +
+                "</li>" +
+                "<li>Intensive Training Initiative:" +
+                "<ul>" +
+                "<li>Launch an intensive training initiative targeting all staff members, focusing on GDPR requirements, healthcare data protection, and compliance standards.</li>" +
+                "<li>Customize training modules to address specific roles and responsibilities within the healthcare organization, ensuring relevance and effectiveness.</li>" +
+                "<li>Implement regular assessments and evaluations to measure training effectiveness and identify areas for improvement.</li>" +
+                "</ul>" +
+                "</li>" +
+                "<li>Rapid Security Enhancement Program:" +
+                "<ul>" +
+                "<li>Immediately prioritize the enhancement of data security measures, including encryption, access controls, and incident response protocols.</li>" +
+                "<li>Allocate resources and budget to swiftly implement necessary security upgrades and improvements.</li>" +
+                "<li>Engage external cybersecurity experts to conduct thorough security assessments and provide recommendations for mitigating identified risks.</li>" +
+                "</ul>" +
+                "</li>" +
+                "</ul>";
+            } else if (percentage >= 40 && percentage <= 79) {
+                return "Medium Risk :" +
+                "<ul>" +
+                "<li>Streamlined Consent and Documentation Processes:" +
+                "<ul>" +
+                "<li>Streamline consent mechanisms and documentation processes to ensure clarity, transparency, and compliance with GDPR and healthcare data regulations.</li>" +
+                "<li>Revise consent forms and procedures to simplify language and improve understanding for patients and staff alike.</li>" +
+                "<li>Implement automated systems or tools to facilitate efficient consent management and documentation.</li>" +
+                "</ul>" +
+                "</li>" +
+                "<li>Vendor Compliance Strengthening Initiative:" +
+                "<ul>" +
+                "<li>Strengthen vendor compliance evaluation processes to ensure all third-party vendors and contractors align with GDPR and healthcare data protection standards.</li>" +
+                "<li>Enhance due diligence procedures to include rigorous assessments of vendor data handling practices and security measures.</li>" +
+                "<li>Develop contractual clauses and agreements that explicitly outline vendor compliance requirements and obligations.</li>" +
+                "</ul>" +
+                "</li>" +
+                "<li>Formalized Privacy Impact Assessment Framework:" +
+                "<ul>" +
+                "<li>Formalize a structured framework for conducting privacy impact assessments (PIAs) for new healthcare projects, initiatives, or technological deployments.</li>" +
+                "<li>Establish clear guidelines, templates, and approval processes for conducting PIAs in accordance with GDPR and healthcare data protection regulations.</li>" +
+                "<li>Integrate PIA reviews into the organization's project management lifecycle to ensure proactive identification and mitigation of privacy risks.</li>" +
+                "</ul>" +
+                "</li>" +
+                "</ul>";
+            } else if (percentage >= 80 && percentage <= 100) {
+                return "Low Risk :" +
+                "<ul>" +
+                "<li>Continuous Compliance Excellence Program:" +
+                "<ul>" +
+                "<li>Launch a continuous compliance excellence program to foster a culture of ongoing improvement and innovation in data compliance practices.</li>" +
+                "<li>Establish a dedicated compliance committee tasked with monitoring regulatory developments, evaluating organizational performance, and implementing best practices.</li>" +
+                "<li>Conduct regular audits and assessments to measure compliance maturity and identify opportunities for optimization and enhancement.</li>" +
+                "</ul>" +
+                "</li>" +
+                "<li>Strategic Technology Investment Strategy:" +
+                "<ul>" +
+                "<li>Develop a strategic technology investment strategy focused on leveraging advanced solutions and tools to further enhance data protection and compliance capabilities.</li>" +
+                "<li>Prioritize investments in cutting-edge encryption, data anonymization, and artificial intelligence-driven compliance monitoring technologies.</li>" +
+                "<li>Foster collaboration with technology vendors and industry partners to stay abreast of emerging trends and opportunities for innovation.</li>" +
+                "</ul>" +
+                "</li>" +
+                "<li>Collaborative Partnership Development:" +
+                "<ul>" +
+                "<li>Forge collaborative partnerships with industry-leading experts, regulatory authorities, and peer organizations to share knowledge, insights, and best practices in GDPR and healthcare data compliance.</li>" +
+                "<li>Establish joint working groups or committees to address common challenges and develop shared solutions to complex compliance issues.</li>" +
+                "<li>Leverage partnerships to participate in industry forums, conferences, and working groups to enhance the organization's visibility and influence in the healthcare compliance landscape.</li>" +
+                "</ul>" +
+                "</li>" +
+                "</ul>";
+            }
+        }
+
+        // Array containing all the questions and answers
+        var questions = [
+    {
+        question: "Does the healthcare organization have a dedicated Data Protection Officer (DPO) with expertise in healthcare data regulations?",
+        answers: [
+            "Yes, we have appointed a DPO specialized in healthcare data regulations.",
+            "No, but we have assigned someone with knowledge of healthcare data regulations.",
+            "Not applicable, as our organization is exempt from appointing a DPO."
+        ]
+    },
+    {
+        question: "Has the organization conducted a comprehensive audit of all patient data processed, including sensitive health information?",
+        answers: [
+            "Yes, we have conducted a thorough audit covering all patient data, including sensitive health information.",
+            "Partially, we have audited some areas but not all.",
+            "No, we haven't conducted a data audit yet."
+        ]
+    },
+    {
+        question: "Are patient consent mechanisms in place for processing their health data, aligned with GDPR requirements?",
+        answers: [
+            "Yes, we have implemented mechanisms to obtain valid consent for processing patient health data.",
+            "Partially, we have started implementing consent mechanisms.",
+            "No, we haven't implemented consent mechanisms for patient health data."
+        ]
+    },
+    {
+        question: "Is patient data securely stored and protected against unauthorized access, following healthcare data security standards?",
+        answers: [
+            "Yes, patient data is securely stored and protected following healthcare data security standards and encryption.",
+            "Partially, some data is encrypted, but not all.",
+            "No, data security measures are inadequate."
+        ]
+    },
+    {
+        question: "Are healthcare staff informed about patient data protection rights under GDPR, including access and rectification rights?",
+        answers: [
+            "Yes, healthcare staff is informed about patient data protection rights under GDPR.",
+            "Partially, we provide some information but not comprehensive.",
+            "No, staff is not adequately informed."
+        ]
+    },
+    {
+        question: "Does the organization have procedures in place for handling data breaches involving patient health information?",
+        answers: [
+            "Yes, we have established procedures for responding to data breaches involving patient health information.",
+            "Partially, we have some procedures but they need improvement.",
+            "No, we do not have procedures for handling data breaches."
+        ]
+    },
+    {
+        question: "Has healthcare staff received training on GDPR requirements and healthcare data protection best practices?",
+        answers: [
+            "Yes, all staff members have undergone GDPR and healthcare data protection training.",
+            "Partially, some staff members have received training.",
+            "No, staff has not been trained on GDPR and healthcare data protection requirements."
+        ]
+    },
+    {
+        question: "Are third-party vendors and contractors compliant with GDPR and healthcare data protection requirements?",
+        answers: [
+            "Yes, we have ensured that all third-party vendors are compliant with GDPR and healthcare data protection requirements.",
+            "Partially, we are in the process of evaluating third-party compliance.",
+            "No, we haven't assessed third-party compliance with GDPR and healthcare data protection."
+        ]
+    },
+    {
+        question: "Does the organization conduct regular privacy impact assessments (PIAs) for new healthcare projects or processes involving patient data?",
+        answers: [
+            "Yes, we conduct PIAs for all new healthcare projects and processes involving patient data.",
+            "Partially, we conduct PIAs for some new projects or processes.",
+            "No, we do not conduct privacy impact assessments."
+        ]
+    },
+    {
+        question: "Is there a process for managing patient data subject requests, including requests for data deletion or portability?",
+        answers: [
+            "Yes, we have a structured process for managing patient data subject requests.",
+            "Partially, we manage some data subject requests but lack a formal process.",
+            "No, we do not have a process for managing patient data subject requests."
+        ]
+    },
+    {
+        question: "Has the organization appointed a representative within the EU if required by GDPR?",
+        answers: [
+            "Yes, we have appointed an EU representative as required by GDPR.",
+            "No, as our organization does not require an EU representative.",
+            "Not applicable, as our organization is based outside the EU."
+        ]
+    },
+    {
+        question: "Are data protection impact assessments (DPIAs) conducted for high-risk healthcare data processing activities?",
+        answers: [
+            "Yes, we conduct DPIAs for all high-risk healthcare data processing activities.",
+            "Partially, we conduct DPIAs for some high-risk activities.",
+            "No, we do not conduct DPIAs for high-risk processing activities."
+        ]
+    },
+    {
+        question: "Does the organization have procedures in place for demonstrating compliance with GDPR and healthcare data regulations to regulatory authorities?",
+        answers: [
+            "Yes, we have established procedures for demonstrating compliance to regulatory authorities.",
+            "Partially, we have some procedures but they need refinement.",
+            "No, we do not have procedures for demonstrating compliance."
+        ]
+    },
+    {
+        question: "Has the organization established a process for regularly reviewing and updating healthcare data protection policies and procedures?",
+        answers: [
+            "Yes, we have a process for regularly reviewing and updating healthcare data protection policies and procedures.",
+            "Partially, we review and update policies sporadically.",
+            "No, we do not have a process for reviewing and updating policies."
+        ]
+    },
+    {
+        question: "Are there measures in place to ensure that patient data is only accessed by authorized personnel for legitimate purposes?",
+        answers: [
+            "Yes, strict access controls are in place to ensure patient data is accessed only by authorized personnel.",
+            "Partially, access controls are in place but need improvement.",
+            "No, access controls for patient data are inadequate."
+        ]
+    },
+    {
+        question: "Does the organization have policies in place for the use of healthcare smart devices, ensuring patient data privacy and GDPR compliance?",
+        answers: [
+            "Yes, we have established policies governing the use of healthcare smart devices to ensure patient data privacy and GDPR compliance.",
+            "Partially, we have some policies but they need further development.",
+            "No, we do not have specific policies addressing healthcare smart devices."
+        ]
+    },
+    {
+        question: "Are healthcare smart devices used in compliance with GDPR principles, such as data minimization and purpose limitation?",
+        answers: [
+            "Yes, healthcare smart devices are used in compliance with GDPR principles, ensuring data minimization and purpose limitation.",
+            "Partially, there are some areas where compliance could be improved.",
+            "No, healthcare smart devices are not used in compliance with GDPR principles."
+        ]
+    },
+    {
+        question: "Has the organization implemented technical measures to secure healthcare smart devices and the data they collect?",
+        answers: [
+            "Yes, technical measures have been implemented to secure healthcare smart devices and the data they collect.",
+            "Partially, some technical measures are in place but they need enhancement.",
+            "No, technical measures to secure healthcare smart devices are lacking."
+        ]
+    },
+    {
+        question: "Are healthcare smart device manufacturers vetted for their data privacy and security practices before procurement?",
+        answers: [
+            "Yes, we vet healthcare smart device manufacturers for their data privacy and security practices before procurement.",
+            "Partially, we consider privacy and security practices but it's not always a primary factor.",
+            "No, we do not vet healthcare smart device manufacturers for privacy and security practices."
+        ]
+    },
+    {
+        question: "Does the organization conduct regular audits of data collected by healthcare smart devices to ensure compliance with GDPR and data protection standards?",
+        answers: [
+            "Yes, we conduct regular audits of data collected by healthcare smart devices to ensure GDPR compliance and data protection standards.",
+            "Partially, audits are conducted sporadically or in certain areas only.",
+            "No, regular audits of data collected by healthcare smart devices are not conducted."
+        ]
+    },
+    {
+        question: "Is there a process in place for obtaining explicit consent from patients before using healthcare smart devices to collect their data?",
+        answers: [
+            "Yes, we have a process for obtaining explicit consent from patients before using healthcare smart devices to collect their data.",
+            "Partially, consent processes exist but need refinement.",
+            "No, there is no specific process for obtaining consent for healthcare smart device data collection."
+        ]
+    },
+    {
+        question: "Are healthcare staff trained on the proper use of healthcare smart devices and the importance of patient data privacy?",
+        answers: [
+            "Yes, healthcare staff is trained on the proper use of healthcare smart devices and the importance of patient data privacy.",
+            "Partially, training on healthcare smart devices and data privacy is provided but may need improvement.",
+            "No, healthcare staff has not received training on healthcare smart devices and data privacy."
+        ]
+    },
+    {
+        question: "Has the organization established procedures for securely disposing of data collected by healthcare smart devices when it's no longer needed?",
+        answers: [
+            "Yes, we have established procedures for securely disposing of data collected by healthcare smart devices when it's no longer needed.",
+            "Partially, disposal procedures exist but may need refinement.",
+            "No, there are no specific procedures for securely disposing of data collected by healthcare smart devices."
+        ]
+    },
+    {
+        question: "Does the organization have contingency plans in place to address potential privacy or security risks associated with healthcare smart devices?",
+        answers: [
+            "Yes, we have contingency plans in place to address potential privacy or security risks associated with healthcare smart devices.",
+            "Partially, some contingency plans exist but need further development.",
+            "No, there are no specific contingency plans for addressing risks associated with healthcare smart devices."
+        ]
+    },
+    {
+        question: "Is there a process for monitoring and updating healthcare smart devices to ensure they meet the latest privacy and security standards?",
+        answers: [
+            "Yes, we have a process for monitoring and updating healthcare smart devices to ensure they meet the latest privacy and security standards.",
+            "Partially, monitoring and updating processes exist but may need improvement.",
+            "No, there is no specific process for monitoring and updating healthcare smart devices for privacy and security standards compliance."
+        ]
+    }
+];
+
+
+       
+        showQuestion(currentQuestion);
+        updateButtons();
+    </script>
+</body>
+</html>
